@@ -4,4 +4,4 @@ This branch is the `5.00` release, with [the original 3.3.5 dbm straight off cur
 
 ### What does that mean?
 
-Going to [placeholder]() you can see all the changes made by this edited version on the left, and how it is in the original dbm on the right.
+Going to [this commit](https://github.com/ajseward/DBM-Frostmourne/commit/74457ded46cd67309e21b19ccca7f0487fcdcfcf) you can see all the changes made by this edited version on the left in red, and how it is in the original dbm on the right in green.
