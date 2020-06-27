@@ -43,12 +43,6 @@ local warnSubmergeSoon		= mod:NewAnnounce("WarnSubmergeSoon", 1, "Interface\\Add
 local specWarnSubmergeSoon	= mod:NewSpecialWarning("specWarnSubmergeSoon", mod:IsTank())
 local timerSubmerge			= mod:NewTimer(75, "TimerSubmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
 
--- Submerge 2
-local warnSubmergeTwo			= mod:NewAnnounce("WarnSubmerge", 3, "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
-local warnSubmergeTwoSoon		= mod:NewAnnounce("WarnSubmergeSoon", 1, "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
-local specWarnSubmergeTwoSoon	= mod:NewSpecialWarning("specWarnSubmergeSoon", mod:IsTank())
-local timerSubmergeTwo			= mod:NewTimer(145, "2nd Submerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp")
-
 -- Phases
 local warnPhase3			= mod:NewPhaseAnnounce(3)
 local enrageTimer			= mod:NewBerserkTimer(570)	-- 9:30 ? hmpf (no enrage while submerged... this sucks)
@@ -80,15 +74,11 @@ function mod:OnCombatStart(delay)
 	timerSubmerge:Start(80-delay)
 	enrageTimer:Start(-delay)
 	timerFreezingSlash:Start(-delay)
-	warnSubmergeTwoSoon:Schedule(215)
-	specWarnSubmergeTwoSoon:Schedule(215)
-	timerSubmergeTwo:Schedule(80)
 	if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
 		timerShadowStrike:Start()
 		preWarnShadowStrike:Schedule(25.5-delay)
 		self:ScheduleMethod(30.5-delay, "ShadowStrike")
 	end
-	self.vb.phase = 1
 end
 
 function mod:Adds() 
@@ -228,22 +218,9 @@ function mod:CHAT_MSG_RAID_BOSS_EMOTE(msg)
 end
 
 function mod:RemoveBuffs()
-	CancelUnitBuff("player", (GetSpellInfo(47440)))		-- Commanding Shout (Rank 3)
-	CancelUnitBuff("player", (GetSpellInfo(47439)))		-- Commanding Shout (Rank 2)
-	CancelUnitBuff("player", (GetSpellInfo(45517)))		-- Commanding Shout (Rank 1)
-	CancelUnitBuff("player", (GetSpellInfo(469)))		-- Commanding Shout (Rank 1)
-	CancelUnitBuff("player", (GetSpellInfo(48161)))		-- Power Word: Fortitude (Rank 8)
-	CancelUnitBuff("player", (GetSpellInfo(25389)))		-- Power Word: Fortitude (Rank 7)
-	CancelUnitBuff("player", (GetSpellInfo(10938)))		-- Power Word: Fortitude (Rank 6)
-	CancelUnitBuff("player", (GetSpellInfo(10937)))		-- Power Word: Fortitude (Rank 5)
-	CancelUnitBuff("player", (GetSpellInfo(2791)))		-- Power Word: Fortitude (Rank 4)
-	CancelUnitBuff("player", (GetSpellInfo(1245)))		-- Power Word: Fortitude (Rank 3)
-	CancelUnitBuff("player", (GetSpellInfo(1244)))		-- Power Word: Fortitude (Rank 2)
-	CancelUnitBuff("player", (GetSpellInfo(1243)))		-- Power Word: Fortitude (Rank 1)
-	CancelUnitBuff("player", (GetSpellInfo(48162)))		-- Prayer of Fortitude (Rank 4)
-	CancelUnitBuff("player", (GetSpellInfo(25392)))		-- Prayer of Fortitude (Rank 3)
-	CancelUnitBuff("player", (GetSpellInfo(21564)))		-- Prayer of Fortitude (Rank 2)
-	CancelUnitBuff("player", (GetSpellInfo(21562)))		-- Prayer of Fortitude (Rank 1)
-	CancelUnitBuff("player", (GetSpellInfo(72590)))		-- Runescroll of Fortitude
+	CancelUnitBuff("player", (GetSpellInfo(47440)))		-- Commanding Shout
+	CancelUnitBuff("player", (GetSpellInfo(48161)))		-- Power Word: Fortitude
+	CancelUnitBuff("player", (GetSpellInfo(48162)))		-- Prayer of Fortitude
+	CancelUnitBuff("player", (GetSpellInfo(69377)))		-- Runescroll of Fortitude
 end
 

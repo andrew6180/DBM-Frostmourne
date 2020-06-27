@@ -7,7 +7,6 @@ mod:SetUsedIcons(1, 2, 3, 4, 5, 6, 7, 8)
 
 mod:RegisterCombat("yell", L.YellPull)
 mod:RegisterCombat("yell", L.YellHardPull)
-mod:RegisterKill("yell", L.YellKilled)
 
 mod:RegisterEvents(
 	"SPELL_CAST_START",
@@ -17,8 +16,7 @@ mod:RegisterEvents(
 	"SPELL_AURA_REMOVED",
 	"UNIT_SPELLCAST_CHANNEL_STOP",
 	"CHAT_MSG_LOOT",
-	"SPELL_SUMMON",
-	"SPELL_DAMAGE"
+	"SPELL_SUMMON"
 )
 
 local blastWarn					= mod:NewTargetAnnounce(64529, 4)
@@ -30,29 +28,29 @@ local warnFrostBomb				= mod:NewSpellAnnounce(64623, 3)
 local warnShockBlast			= mod:NewSpecialWarning("WarningShockBlast", nil, false)
 mod:AddBoolOption("ShockBlastWarningInP1", mod:IsMelee(), "announce")
 mod:AddBoolOption("ShockBlastWarningInP4", mod:IsMelee(), "announce")
-local warnLaserBarrage				= mod:NewSpecialWarningSpell(63293)
+local warnDarkGlare				= mod:NewSpecialWarningSpell(63293)
 
 local enrage 					= mod:NewBerserkTimer(900)
 local timerHardmode				= mod:NewTimer(610, "TimerHardmode", 64582)
-local timerP1toP2				= mod:NewTimer(46, "TimeToPhase2")
-local timerP2toP3				= mod:NewTimer(30, "TimeToPhase3")
-local timerP3toP4				= mod:NewTimer(31, "TimeToPhase4")
+local timerP1toP2				= mod:NewTimer(43, "TimeToPhase2")
+local timerP2toP3				= mod:NewTimer(32, "TimeToPhase3")
+local timerP3toP4				= mod:NewTimer(25, "TimeToPhase4")
 local timerProximityMines		= mod:NewNextTimer(35, 63027)
 local timerShockBlast			= mod:NewCastTimer(63631)
 local timerSpinUp				= mod:NewCastTimer(4, 63414)
-local timerLaserBarrageCast		= mod:NewCastTimer(10, 63274)
-local timerNextLaserBarrage		= mod:NewNextTimer(41, 63274)
+local timerDarkGlareCast		= mod:NewCastTimer(10, 63274)
+local timerNextDarkGlare		= mod:NewNextTimer(41, 63274)
 local timerNextShockblast		= mod:NewNextTimer(34, 63631)
 local timerPlasmaBlastCD		= mod:NewCDTimer(30, 64529)
 local timerShell				= mod:NewBuffActiveTimer(6, 63666)
-local timerFlameSuppressant		= mod:NewCastTimer(70, 64570)
+local timerFlameSuppressant		= mod:NewCastTimer(60, 64570)
 local timerNextFlameSuppressant	= mod:NewNextTimer(10, 65192)
 local timerNextFlames			= mod:NewNextTimer(27.5, 64566)
 local timerNextFrostBomb        = mod:NewNextTimer(30, 64623)
 local timerBombExplosion		= mod:NewCastTimer(15, 65333)
 
 mod:AddBoolOption("PlaySoundOnShockBlast", isMelee)
-mod:AddBoolOption("PlaySoundOnLaserBarrage", true)
+mod:AddBoolOption("PlaySoundOnDarkGlare", true)
 mod:AddBoolOption("HealthFramePhase4", true)
 mod:AddBoolOption("AutoChangeLootToFFA", true)
 mod:AddBoolOption("SetIconOnNapalm", true)
@@ -60,7 +58,7 @@ mod:AddBoolOption("SetIconOnPlasmaBlast", true)
 mod:AddBoolOption("RangeFrame")
 
 local hardmode = false
-local phase						= 0
+local phase						= 0 
 local lootmethod, masterlooterRaidID
 
 local spinningUp				= GetSpellInfo(63414)
@@ -182,8 +180,8 @@ end
 
 local function show_warning_for_spinup()
 	if is_spinningUp then
-		warnLaserBarrage:Show()
-		if mod.Options.PlaySoundOnLaserBarrage then
+		warnDarkGlare:Show()
+		if mod.Options.PlaySoundOnDarkGlare then
 			PlaySoundFile("Sound\\Creature\\HoodWolf\\HoodWolfTransformPlayer01.wav")
 		end
 	end
@@ -196,11 +194,11 @@ function mod:SPELL_CAST_SUCCESS(args)
 	elseif args:IsSpellID(63414) then			-- Spinning UP (before Dark Glare)
 		is_spinningUp = true
 		timerSpinUp:Start()
-		timerLaserBarrageCast:Schedule(4)
-		timerNextLaserBarrage:Schedule(19)			-- 4 (cast spinup) + 15 sec (cast dark glare)
+		timerDarkGlareCast:Schedule(4)
+		timerNextDarkGlare:Schedule(19)			-- 4 (cast spinup) + 15 sec (cast dark glare)
 		DBM:Schedule(0.15, show_warning_for_spinup)	-- wait 0.15 and then announce it, otherwise it will sometimes fail
 		lastSpinUp = GetTime()
-
+	
 	elseif args:IsSpellID(65192) then
 		timerNextFlameSuppressant:Start()
 	end
@@ -234,8 +232,8 @@ function mod:NextPhase()
 		if self.Options.AutoChangeLootToFFA and DBM:GetRaidRank() == 2 then
 			SetLootMethod("freeforall")
 		end
-		timerLaserBarrageCast:Cancel()
-		timerNextLaserBarrage:Cancel()
+		timerDarkGlareCast:Cancel()
+		timerNextDarkGlare:Cancel()
 		timerNextFrostBomb:Cancel()
 		timerP2toP3:Start()
 		if self.Options.HealthFrame then
@@ -266,7 +264,7 @@ function mod:NextPhase()
 	end
 end
 
-do
+do 
 	local count = 0
 	local last = 0
 	local lastPhaseChange = 0
@@ -304,7 +302,7 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		--DBM:AddMsg("ALPHA: yell detect phase3, syncing to clients")
 		self:SendSync("Phase4") -- SPELL_AURA_REMOVED detection might fail in phase 3...there are simply not enough debuffs on him
 
-	elseif msg:find(L.YellHardPull) or msg == "Self-destruct sequence initiated."then
+	elseif msg:find(L.YellHardPull) then
 		timerHardmode:Start()
 		timerFlameSuppressant:Start()
 		enrage:Stop()
@@ -319,9 +317,9 @@ function mod:OnSync(event, args)
 	if event == "SpinUpFail" then
 		is_spinningUp = false
 		timerSpinUp:Cancel()
-		timerLaserBarrageCast:Cancel()
-		timerNextLaserBarrage:Cancel()
-		warnLaserBarrage:Cancel()
+		timerDarkGlareCast:Cancel()
+		timerNextDarkGlare:Cancel()
+		warnDarkGlare:Cancel()
 	elseif event == "Phase2" and phase == 1 then -- alternate localized-dependent detection
 		self:NextPhase()
 	elseif event == "Phase3" and phase == 2 then

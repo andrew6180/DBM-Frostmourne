@@ -93,30 +93,12 @@ function mod:OnCombatStart(delay)
 	lastGoo = 0
 	warnedfailed = false
 	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(10)
-	end
-	timerGooCD:Start(13-delay)
-end
-
---[[
-	function mod:OnCombatStart(delay)
-	berserkTimer:Start(-delay)
-	timerInhaledBlight:Start(-delay)
-	timerGasSporeCD:Start(20-delay)--This may need tweaking
-	table.wipe(gasSporeTargets)
-	table.wipe(vileGasTargets)
-	gasSporeIcon = 8
-	gasSporeCast = 0
-	lastGoo = 0
-	warnedfailed = false
-	if self.Options.RangeFrame then
 		DBM.RangeCheck:Show(8)
 	end
 	if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
 		timerGooCD:Start(13-delay)
 	end
 end
-]]--
 
 function mod:OnCombatEnd()
 	if self.Options.RangeFrame then
@@ -142,22 +124,6 @@ function mod:OnSync(event, arg)
 		if time() - lastGoo > 5 then
 			warnGoo:Show()
 			specWarnGoo:Show()
-			if mod:IsDifficulty("normal25") then
-				timerGooCD:Start()
-			else
-				timerGooCD:Start(30)--30 seconds in between goos on 10 man heroic
-			end
-			lastGoo = time()
-		end
-	end
-end
-
---[[
-function mod:OnSync(event, arg)
-	if event == "Goo" then
-		if time() - lastGoo > 5 then
-			warnGoo:Show()
-			specWarnGoo:Show()
 			if mod:IsDifficulty("heroic25") then
 				timerGooCD:Start()
 			else
@@ -167,7 +133,6 @@ function mod:OnSync(event, arg)
 		end
 	end
 end
-]]--
 
 function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(69279) then	-- Gas Spore

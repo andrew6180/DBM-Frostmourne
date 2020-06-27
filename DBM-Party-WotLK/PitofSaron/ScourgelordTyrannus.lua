@@ -27,7 +27,7 @@ local specWarnHoarfrostNear		= mod:NewSpecialWarning("specWarnHoarfrostNear")
 local specWarnIcyBlast			= mod:NewSpecialWarningMove(69628)
 local specWarnOverlordsBrand	= mod:NewSpecialWarningYou(69172)
 
-local timerCombatStart			= mod:NewTimer(44, "TimerCombatStart", 2457)
+local timerCombatStart			= mod:NewTimer(31, "TimerCombatStart", 2457)
 local timerOverlordsBrand		= mod:NewTargetTimer(8, 69172)
 local timerUnholyPower			= mod:NewBuffActiveTimer(10, 69629)
 local timerForcefulSmash		= mod:NewCDTimer(50, 69627) --hotfixed? new combat logs show it every 50 seconds'ish.
@@ -36,7 +36,7 @@ mod:AddBoolOption("SetIconOnHoarfrostTarget", true)
 
 function mod:OnCombatStart(delay)
 	timerCombatStart:Start(-delay)
-	timerForcefulSmash:Start(60-delay)
+	timerForcefulSmash:Start(40-delay)
 end
 
 function mod:SPELL_CAST_START(args)

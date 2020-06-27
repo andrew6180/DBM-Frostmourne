@@ -42,7 +42,7 @@ local timerBloodBolt				= mod:NewBuffActiveTimer(6, 71772)
 local timerBloodThirst				= mod:NewBuffActiveTimer(10, 71474)
 local timerEssenceoftheBloodQueen	= mod:NewBuffActiveTimer(60, 71473)
 
-local berserkTimer					= mod:NewBerserkTimer(330)
+local berserkTimer					= mod:NewBerserkTimer(320)
 
 local soundSwarmingShadows			= mod:NewSound(71266)
 

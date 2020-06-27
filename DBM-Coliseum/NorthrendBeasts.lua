@@ -41,18 +41,17 @@ local specWarnChargeNear	= mod:NewSpecialWarning("SpecialWarningChargeNear")
 local specWarnTranq			= mod:NewSpecialWarning("SpecialWarningTranq", mod:CanRemoveEnrage())
 
 local enrageTimer			= mod:NewBerserkTimer(223)
-local timerCombatStart		= mod:NewTimer(17.5, "TimerCombatStart", 2457)
+local timerCombatStart		= mod:NewTimer(23, "TimerCombatStart", 2457)
 local timerNextBoss			= mod:NewTimer(190, "TimerNextBoss", 2457)
-local timerSubmerge			= mod:NewTimer(42, "TimerSubmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp") 
-local timerEmerge			= mod:NewTimer(6, "TimerEmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp")
+local timerSubmerge			= mod:NewTimer(45, "TimerSubmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendBurrow.blp") 
+local timerEmerge			= mod:NewTimer(10, "TimerEmerge", "Interface\\AddOns\\DBM-Core\\textures\\CryptFiendUnBurrow.blp")
 
 local timerBreath			= mod:NewCastTimer(5, 67650)
 local timerNextStomp		= mod:NewNextTimer(20, 66330)
 local timerNextImpale		= mod:NewNextTimer(10, 67477, nil, mod:IsTank() or mod:IsHealer())
 local timerRisingAnger      = mod:NewNextTimer(20.5, 66636)
 local timerStaggeredDaze	= mod:NewBuffActiveTimer(15, 66758)
-local timerNextCrash		= mod:NewCDTimer(70, 67662) -- Original timer. The second Massive Crash should happen 70 seconds after the first
-local timerNextCrashTwo		= mod:NewCDTimer(71, 67662, "2nd Massive Crash") -- Added timer to start a second Massive Crash timer at the start of Icehowl. The second Massive Crash happens 122 seconds into the Icehowl fight
+local timerNextCrash		= mod:NewCDTimer(55, 67662)
 local timerSweepCD			= mod:NewCDTimer(17, 66794, nil, mod:IsMelee())
 local timerSlimePoolCD		= mod:NewCDTimer(12, 66883, nil, mod:IsMelee())
 local timerAcidicSpewCD		= mod:NewCDTimer(21, 66819)
@@ -74,8 +73,8 @@ local toxinTargets			= {}
 local burnIcon				= 8
 local phases				= {}
 local DreadscaleActive		= true  	-- Is dreadscale moving?
-local DreadscaleDead		= false
-local AcidmawDead			= false
+local DreadscaleDead	= false
+local AcidmawDead	= false
 
 local function updateHealthFrame(phase)
 	if phases[phase] then
@@ -110,7 +109,6 @@ function mod:OnCombatStart(delay)
 	timerRisingAnger:Start(48-delay)
 	timerCombatStart:Start(-delay)
 	updateHealthFrame(1)
-	self.vb.phase = 1
 end
 
 function mod:OnCombatEnd()
@@ -135,7 +133,7 @@ function mod:WormsEmerge()
 	if not AcidmawDead then
 		if DreadscaleActive then
 			timerSweepCD:Start(16)
-			timerParalyticSprayCD:Start(15)			
+			timerParalyticSprayCD:Start(9)			
 		else
 			timerSlimePoolCD:Start(14)
 			timerParalyticBiteCD:Start(5)			
@@ -145,7 +143,7 @@ function mod:WormsEmerge()
 	if not DreadscaleDead then
 		if DreadscaleActive then
 			timerSlimePoolCD:Start(14)
-			timerMoltenSpewCD:Start(16)
+			timerMoltenSpewCD:Start(10)
 			timerBurningBiteCD:Start(5)
 		else
 			timerSweepCD:Start(16)
@@ -166,7 +164,7 @@ function mod:WormsSubmerge()
 	timerBurningSprayCD:Cancel()
 	timerParalyticBiteCD:Cancel()
 	DreadscaleActive = not DreadscaleActive
-	self:ScheduleMethod(6, "WormsEmerge")
+	self:ScheduleMethod(10, "WormsEmerge")
 end
 
 function mod:SPELL_AURA_APPLIED(args)
@@ -196,7 +194,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		mod:ScheduleMethod(0.2, "warnBile")
 	elseif args:IsSpellID(66758) then
 		timerStaggeredDaze:Start()
-	elseif args:IsSpellID(66636) then			-- Rising Anger
+	elseif args:IsSpellID(66636) then						-- Rising Anger
 		WarningSnobold:Show()
 		timerRisingAnger:Show()
 	elseif args:IsSpellID(68335) then
@@ -213,7 +211,7 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 				specWarnImpale3:Show(args.amount)
 			end
 		end
-	elseif args:IsSpellID(66636) then			-- Rising Anger
+	elseif args:IsSpellID(66636) then						-- Rising Anger
 		WarningSnobold:Show()
 		if args.amount <= 3 then
 			timerRisingAnger:Show()
@@ -307,21 +305,18 @@ end
 function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.Phase2 or msg:find(L.Phase2) then
 		self:ScheduleMethod(17, "WormsEmerge")
-		timerCombatStart:Show(11)
+		timerCombatStart:Show(15)
 		updateHealthFrame(2)
-		self.vb.phase = 2
 		if self.Options.RangeFrame then
 			DBM.RangeCheck:Show(10)
 		end
 	elseif msg == L.Phase3 or msg:find(L.Phase3) then
 		updateHealthFrame(3)
-		self.vb.phase = 3
 		if self:IsDifficulty("heroic10", "heroic25") then
 			enrageTimer:Start()
 		end
 		self:UnscheduleMethod("WormsSubmerge")
-		timerNextCrash:Start(52)
-		timerNextCrashTwo:Schedule(52)
+		timerNextCrash:Start(45)
 		timerNextBoss:Cancel()
 		timerSubmerge:Cancel()
 		if self.Options.RangeFrame then

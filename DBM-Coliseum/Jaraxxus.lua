@@ -28,9 +28,7 @@ local isMagicDispeller = select(2, UnitClass("player")) == "PALADIN"
 
 local warnFelFireball			= mod:NewCastAnnounce(66532, 2)
 local warnPortalSoon			= mod:NewSoonAnnounce(67900, 3)
-local warnPortalTwoSoon			= mod:NewSoonAnnounce(67900, 3)
 local warnVolcanoSoon			= mod:NewSoonAnnounce(67901, 3)
-local warnNetherPowerSoon 		= mod:NewSoonAnnounce(67009, 3)
 local warnFlame					= mod:NewTargetAnnounce(68123, 4)
 local warnFlesh					= mod:NewTargetAnnounce(66237, 4, nil, mod:IsHealer())
 local warnNetherPower			= mod:NewAnnounce("WarnNetherPower", 4, 67009)
@@ -43,15 +41,14 @@ local specWarnFelInferno		= mod:NewSpecialWarningMove(68718)
 local SpecWarnFelFireball		= mod:NewSpecialWarning("SpecWarnFelFireball", false)
 local SpecWarnFelFireballDispel	= mod:NewSpecialWarningDispel(66965, isMagicDispeller)
 
-local timerCombatStart			= mod:NewTimer(76.3, "TimerCombatStart", 2457)--roleplay for first pull
+local timerCombatStart			= mod:NewTimer(84, "TimerCombatStart", 2457)--rollplay for first pull
 local enrageTimer				= mod:NewBerserkTimer(600)
 local timerFlame 				= mod:NewTargetTimer(8, 68123)--There are 8 debuff Ids. Since we detect first to warn, use an 8sec timer to cover duration of trigger spell and damage debuff.
 local timerFlameCD				= mod:NewCDTimer(30, 68125)
-local timerNetherPowerCD		= mod:NewCDTimer(45, 67009)
+local timerNetherPowerCD		= mod:NewCDTimer(42, 67009)
 local timerFlesh				= mod:NewTargetTimer(12, 67049)
 local timerFleshCD				= mod:NewCDTimer(23, 67051) 
 local timerPortalCD				= mod:NewCDTimer(120, 67900)
-local timerPortalTwo			= mod:NewTimer(120, "2nd Nether Portal")
 local timerVolcanoCD			= mod:NewCDTimer(120, 67901)
 
 mod:AddBoolOption("LegionFlameWhisper", false, "announce")
@@ -67,14 +64,10 @@ function mod:OnCombatStart(delay)
 		DBM.BossHealth:Show(L.name)
 		DBM.BossHealth:AddBoss(34780, L.name)
 	end
-	timerPortalCD:Start(22-delay)
-	timerPortalTwo:Schedule(22)
-	warnPortalSoon:Schedule(17-delay)
-	warnPortalTwoSoon:Schedule(137-delay)
-	timerVolcanoCD:Start(82-delay)
-	warnVolcanoSoon:Schedule(77-delay)
-    timerNetherPowerCD:Start(15-delay)
-	warnNetherPowerSoon:Schedule(10-delay)
+	timerPortalCD:Start(20-delay)
+	warnPortalSoon:Schedule(15-delay)
+	timerVolcanoCD:Start(80-delay)
+	warnVolcanoSoon:Schedule(75-delay)
 	timerFleshCD:Start(14-delay)
 	timerFlameCD:Start(20-delay)
 	enrageTimer:Start(-delay)
@@ -153,12 +146,6 @@ function mod:SPELL_AURA_APPLIED(args)
 		end
 		setIncinerateTarget(self, args.destGUID, args.destName)
 		self:Schedule(15, clearIncinerateTarget, self, args.destName)
-	elseif args:IsSpellID(66228, 67108, 67106, 67107) then	
-		timerNetherPowerCD:Stop()							-- Nether Power
-		timerNetherPowerCD:Start()
-		warnNetherPowerSoon:Schedule(40)
-		specWarnNetherPower:Show()
-		warnNetherPower:Show()
 
 	elseif args:IsSpellID(66197, 68123, 68124, 68125) then		-- Legion Flame ids 66199, 68126, 68127, 68128 (second debuff) do the actual damage. First 2 seconds are trigger debuff only.
 		local targetname = args.destName
@@ -202,7 +189,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 	if args:IsSpellID(67009) then								-- Nether Power
 		warnNetherPower:Show()
 		timerNetherPowerCD:Start()
-		warnNetherPowerSoon:Schedule(35)
 		specWarnNetherPower:Show()
 
 	elseif args:IsSpellID(67901, 67902, 67903, 66258) then		-- Infernal Volcano

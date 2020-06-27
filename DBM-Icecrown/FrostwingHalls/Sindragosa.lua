@@ -113,24 +113,6 @@ function mod:OnCombatStart(delay)
 	phase = 1
 	activeBeacons = false
 	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(20, GetRaidTargetIndex) -- Edit to fix auto showing range check with heroic mode values
-	end
-end
-
---[[ Original CombatStart Config
-function mod:OnCombatStart(delay)
-	berserkTimer:Start(-delay)
-	timerNextAirphase:Start(50-delay)
-	timerNextBlisteringCold:Start(33-delay)
-	warned_P2 = false
-	warnedfailed = false
-	table.wipe(beaconTargets)
-	table.wipe(beaconIconTargets)
-	table.wipe(unchainedTargets)
-	unchainedIcons = 7
-	phase = 1
-	activeBeacons = false
-	if self.Options.RangeFrame then
 		if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
 			DBM.RangeCheck:Show(20, GetRaidTargetIndex)
 		else
@@ -138,7 +120,6 @@ function mod:OnCombatStart(delay)
 		end
 	end
 end
-]]--
 
 function mod:OnCombatEnd()
 	if self.Options.RangeFrame then
@@ -207,9 +188,8 @@ function mod:SPELL_AURA_APPLIED(args)
 		if args:IsPlayer() then
 			warnInstability:Show(args.amount or 1)
 			timerInstability:Start()
-			if (args.amount or 1) >= 2 then
+			if (args.amount or 1) >= 4 then
 				specWarnInstability:Show(args.amount)
-				SendChatMessage(L.Gained_Instability:format(args.destName), "RAID")
 			end
 		end
 	elseif args:IsSpellID(70127, 72528, 72529, 72530) then	--Mystic Buffet (phase 3 - everyone)
@@ -263,9 +243,6 @@ function mod:SPELL_AURA_REMOVED(args)
 	elseif args:IsSpellID(69766) then	--Instability (casters)
 		if args:IsPlayer() then
 			timerInstability:Cancel()
-			if (args.amount or 1) < 2 then
-				SendChatMessage(L.Instability_Reset:format(args.destName), "RAID")
-			end
 		end
 	elseif args:IsSpellID(70127, 72528, 72529, 72530) then
 		if args:IsPlayer() then
@@ -274,31 +251,6 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 	end
 end
-
---[[
-function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(69762) then
-		if self.Options.SetIconOnUnchainedMagic and not activeBeacons then
-			self:SetIcon(args.destName, 0)
-		end
-	elseif args:IsSpellID(70126) then
-		activeBeacons = false
-	elseif args:IsSpellID(70106) then	--Chilled to the bone (melee)
-		if args:IsPlayer() then
-			timerChilledtotheBone:Cancel()
-		end
-	elseif args:IsSpellID(69766) then	--Instability (casters)
-		if args:IsPlayer() then
-			timerInstability:Cancel()
-		end
-	elseif args:IsSpellID(70127, 72528, 72529, 72530) then
-		if args:IsPlayer() then
-			timerMysticAchieve:Cancel()
-			timerMysticBuffet:Cancel()
-		end
-	end
-end
-]]
 
 function mod:UNIT_HEALTH(uId)
 	if not warned_P2 and self:GetUnitCreatureId(uId) == 36853 and UnitHealth(uId) / UnitHealthMax(uId) <= 0.38 then

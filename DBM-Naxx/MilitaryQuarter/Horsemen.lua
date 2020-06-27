@@ -1,7 +1,7 @@
 local mod	= DBM:NewMod("Horsemen", "DBM-Naxx", 4)
 local L		= mod:GetLocalizedStrings()
 
-mod:SetRevision(("$Revision: 4909 $"):sub(12, -3))
+mod:SetRevision(("$Revision: 2248 $"):sub(12, -3))
 mod:SetCreatureID(16063, 16064, 16065, 30549)
 
 mod:RegisterCombat("combat", 16063, 16064, 16065, 30549)
@@ -15,7 +15,6 @@ mod:RegisterEvents(
 
 local warnMarkSoon			= mod:NewAnnounce("WarningMarkSoon", 1, 28835, false)
 local warnMarkNow			= mod:NewAnnounce("WarningMarkNow", 2, 28835)
-local holyWrathCD     = mod:NewCDTimer(13, 57466)
 
 local specWarnMarkOnPlayer	= mod:NewSpecialWarning("SpecialWarningMarkOnPlayer", nil, false, true)
 
@@ -40,9 +39,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 		markSpam = GetTime()
 		markCounter = markCounter + 1
 	end
-	if args:IsSpellID(28883, 53638, 57466, 32455) then
-		holyWrathCD:Start()
-	end
 end
 
 function mod:SPELL_AURA_APPLIED_DOSE(args)
@@ -52,3 +48,4 @@ function mod:SPELL_AURA_APPLIED_DOSE(args)
 		end
 	end
 end
+

@@ -20,9 +20,8 @@ local warningFear				= mod:NewSpellAnnounce(74384, 3)
 local specWarnCleaveArmor		= mod:NewSpecialWarningStack(74367, nil, 2)--ability lasts 30 seconds, has a 15 second cd, so tanks should trade at 2 stacks.
 
 local timerAddsCD				= mod:NewTimer(45.5, "TimerAdds")
-local timerAddsTravel			= mod:NewTimer(10, "Adds arrive in") -- Timer to indicate when the summoned adds arive
 local timerCleaveArmor			= mod:NewTargetTimer(30, 74367, nil, mod:IsTank() or mod:IsHealer())
-local timerFearCD				= mod:NewCDTimer(31, 74384)--anywhere from 31-40 seconds in between fears.
+local timerFearCD				= mod:NewCDTimer(33, 74384)--anywhere from 33-40 seconds in between fears.
 
 function mod:OnCombatStart(delay)
 	timerFearCD:Start(14-delay)--need more pulls to verify consistency
@@ -52,6 +51,5 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 	if msg == L.SummonMinions or msg:match(L.SummonMinions) then
 		warningFear:Show()
 		timerAddsCD:Start()
-		timerAddsTravel:Start() -- Added timer for travel time on summoned adds
 	end
 end

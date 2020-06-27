@@ -1,10 +1,7 @@
-# DBM-Frostmourne
+# DBM-Frostmourne [compare-to-dbm branch]
 
-A version of WotLK DBM with accurate timers for Warmane servers. Please see the Release tab to find the latest stable version.
+This branch is the `5.00` release, with [the original 3.3.5 dbm straight off curse](https://www.curseforge.com/wow/addons/deadly-boss-mods/files/all?filter-game-version=2020709689%3A98) committed onto it.
 
-### Version bumped to 5.00 to avoid realmwide ban of old version.
-[Frostmourne Changelog](https://github.com/ajseward/DBM-Frostmourne/blob/master/DBM-Core/DBM%20Warmane-Frostmourne%20Changelog.txt)<br>
+### What does that mean?
 
-
-
-Edits mostly done by Celeste(warmane discord) / zbruennig. Sadly he decided to include a malicious payload in his version. This is technically a fork, but to avoid any issue or having anyone try and download older versions it is no longer attached to his.
+Going to [placeholder]() you can see all the changes made by this edited version on the left, and how it is in the original dbm on the right.

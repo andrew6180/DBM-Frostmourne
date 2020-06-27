@@ -23,10 +23,8 @@ local specWarnColdflame		= mod:NewSpecialWarningMove(70825)
 local specWarnWhirlwind		= mod:NewSpecialWarningRun(69076)
 
 local timerBoneSpike		= mod:NewCDTimer(18, 69057)
-local timerBoneSpikeUp		= mod:NewTimer(3, "Spikes up in...")
 local timerWhirlwindCD		= mod:NewCDTimer(90, 69076)
-local timerWhirlwind		= mod:NewBuffActiveTimer(31, 69076)
-local timerWhirlwindStart	= mod:NewTimer(3, "Whirlwind starts in...")
+local timerWhirlwind		= mod:NewBuffActiveTimer(20, 69076)
 local timerBoned			= mod:NewAchievementTimer(8, 4610, "AchievementBoned")
 
 local berserkTimer			= mod:NewBerserkTimer(600)
@@ -52,17 +50,6 @@ function mod:OnCombatStart(delay)
 end
 
 function mod:SPELL_AURA_APPLIED(args)
-	if args:IsSpellID(69076) then			-- Bone Storm (Whirlwind)
-		specWarnWhirlwind:Show()
-		timerWhirlwindCD:Start()
-		preWarnWhirlwind:Schedule(85)
-		timerWhirlwind:Show()
-		soundWhirlwind:Play()
-	end
-end
-
---[[
-function mod:SPELL_AURA_APPLIED(args)
 	if args:IsSpellID(69076) then						-- Bone Storm (Whirlwind)
 		specWarnWhirlwind:Show()
 		timerWhirlwindCD:Start()
@@ -76,21 +63,7 @@ function mod:SPELL_AURA_APPLIED(args)
 		soundWhirlwind:Play()
 	end
 end
-]]--
 
-function mod:SPELL_AURA_REMOVED(args)
-	if args:IsSpellID(69065) then			-- Impaled
-		if self.Options.SetIconOnImpale then
-			self:SetIcon(args.destName, 0)
-		end
-	elseif args:IsSpellID(69076) then
-		if mod:IsDifficulty("normal10") or mod:IsDifficulty("normal25") then
-			timerBoneSpike:Start(15)			-- He will do Bone Spike Graveyard 15 seconds after whirlwind ends on normal - Edit from 15 to 1 for Heroic Mode
-		end
-	end
-end
-
---[[
 function mod:SPELL_AURA_REMOVED(args)
 	if args:IsSpellID(69065) then			-- Impaled
 		if self.Options.SetIconOnImpale then
@@ -102,24 +75,13 @@ function mod:SPELL_AURA_REMOVED(args)
 		end
 	end
 end
-]]
 
-function mod:SPELL_CAST_START(args)
-	if args:IsSpellID(69057, 70826, 72088, 72089) then				-- Bone Spike Graveyard
-		warnBoneSpike:Show()
-		timerBoneSpike:Start()
-		timerBoneSpikeUp:Start()
-	end
-end
-
---[[
 function mod:SPELL_CAST_START(args)
 	if args:IsSpellID(69057, 70826, 72088, 72089) then				-- Bone Spike Graveyard
 		warnBoneSpike:Show()
 		timerBoneSpike:Start()
 	end
 end
-]]--
 
 function mod:SPELL_PERIODIC_DAMAGE(args)
 	if args:IsSpellID(69146, 70823, 70824, 70825) and args:IsPlayer() and GetTime() - lastColdflame > 2 then		-- Coldflame, MOVE!

@@ -65,7 +65,7 @@ local specWarnTrapNear		= mod:NewSpecialWarning("SpecWarnTrapNear") --Heroic Abi
 local specWarnHarvestSouls	= mod:NewSpecialWarningSpell(74297) --Heroic Ability
 local specWarnValkyrLow		= mod:NewSpecialWarning("SpecWarnValkyrLow")
 
-local timerCombatStart		= mod:NewTimer(55, "TimerCombatStart", 2457)
+local timerCombatStart		= mod:NewTimer(53.5, "TimerCombatStart", 2457)
 local timerPhaseTransition	= mod:NewTimer(62, "PhaseTransition", 72262)
 local timerSoulreaper	 	= mod:NewTargetTimer(5.1, 73797, nil, mod:IsTank() or mod:IsHealer())
 local timerSoulreaperCD	 	= mod:NewCDTimer(30.5, 73797, nil, mod:IsTank() or mod:IsHealer())
@@ -364,7 +364,6 @@ function mod:SPELL_CAST_SUCCESS(args)
 			self:SetIcon(args.destName, 7, 5)
 		end
 	elseif args:IsSpellID(68980, 74325, 74326, 74327) then -- Harvest Soul
-	--[[elseif args:IsSpellID(68980, 74325, 74326, 74327) then -- Harvest Soul]]--
 		warnHarvestSoul:Show(args.destName)
 		timerHarvestSoul:Start(args.destName)
 		timerHarvestSoulCD:Start()
@@ -375,9 +374,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 			self:SetIcon(args.destName, 6, 6)
 		end
 	elseif args:IsSpellID(73654, 74295, 74296, 74297) then -- Harvest Souls (Heroic)
-	--[[elseif args:IsSpellID(73654, 74295, 74296, 74297) then -- Harvest Souls (Heroic)]]--
 		specWarnHarvestSouls:Show()
-		timerHarvestSoulCD:Start(105) -- Custom edit to make Harvest Souls timers work again
 		timerVileSpirit:Cancel()
 		timerSoulreaperCD:Cancel()
 		timerDefileCD:Cancel()
@@ -542,7 +539,7 @@ function mod:NextPhase()
 		end
 	elseif phase == 2 then
 		timerSummonValkyr:Start(20)
-		timerSoulreaperCD:Start(32)
+		timerSoulreaperCD:Start(40)
 		timerDefileCD:Start(38)
 		timerInfestCD:Start(14)
 		warnDefileSoon:Schedule(33)

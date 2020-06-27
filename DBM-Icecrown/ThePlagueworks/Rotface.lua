@@ -36,7 +36,7 @@ local specWarnLittleOoze		= mod:NewSpecialWarning("SpecWarnLittleOoze")
 local specWarnVileGas			= mod:NewSpecialWarningYou(72272)
 
 local timerStickyOoze			= mod:NewNextTimer(16, 69774, nil, mod:IsTank())
-local timerWallSlime			= mod:NewTimer(25, "NextPoisonSlimePipes", 69789)
+local timerWallSlime			= mod:NewTimer(20, "NextPoisonSlimePipes", 69789)
 local timerSlimeSpray			= mod:NewNextTimer(21, 69508)
 local timerMutatedInfection		= mod:NewTargetTimer(12, 71224)
 local timerOozeExplosion		= mod:NewCastTimer(4, 69839)
@@ -57,14 +57,15 @@ local function warnRFVileGasTargets()
 end
 
 function mod:OnCombatStart(delay)
-	timerWallSlime:Start(9-delay) -- Adjust from 25 to 9 to have a correct timer from the start
-	timerSlimeSpray:Start(20-delay) -- Custom add for the first Slime Spray
-	timerVileGasCD:Start(34-delay) -- Adjusted from 22 to 34
+	timerWallSlime:Start(25-delay)
 	self:ScheduleMethod(25-delay, "WallSlime")
 	InfectionIcon = 8
 	spamOoze = 0
-	if self.Options.RangeFrame then
-		DBM.RangeCheck:Show(10) -- Increased from 8 to 10
+	if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
+		timerVileGasCD:Start(22-delay)
+		if self.Options.RangeFrame then
+			DBM.RangeCheck:Show(8)
+		end
 	end
 end
 
@@ -73,12 +74,18 @@ function mod:OnCombatEnd()
 		DBM.RangeCheck:Hide()
 	end
 end
+--this function seems rathor limited but not entirely hopeless. i imagine it only works if you or someone else targets the big ooze, but that pretty much means it's useless if kiter doesn't have dbm.
+--[[function mod:SlimeTank()
+	local target = self:GetThreatTarget(36897)
+	if not target then return end
+	self:SendSync("OozeTank", target)
+end--]]
 
 function mod:WallSlime()
 	if self:IsInCombat() then
 		timerWallSlime:Start()
 		self:UnscheduleMethod("WallSlime")
-		self:ScheduleMethod(25, "WallSlime")
+		self:ScheduleMethod(20, "WallSlime")
 	end
 end
 
@@ -156,6 +163,7 @@ function mod:SPELL_DAMAGE(args)
 	if args:IsSpellID(69761, 71212, 73026, 73027) and args:IsPlayer() then
 		specWarnRadiatingOoze:Show()
 	elseif args:GetDestCreatureID() == 36899 and args:IsSrcTypePlayer() and not args:IsSpellID(53189, 53190, 53194, 53195) then--Any spell damage except for starfall (ranks 3 and 4)
+--		self:ScheduleMethod(1, "SlimeTank")
 		if args.sourceName ~= UnitName("player") then
 			if self.Options.TankArrow then
 				DBM.Arrow:ShowRunTo(args.sourceName, 0, 0)
@@ -168,6 +176,7 @@ function mod:SWING_DAMAGE(args)
 	if args:IsPlayer() and args:GetSrcCreatureID() == 36897 then --Little ooze hitting you
 		specWarnLittleOoze:Show()
 	elseif args:GetDestCreatureID() == 36899 and args:IsSrcTypePlayer() then
+--		self:ScheduleMethod(1, "SlimeTank")
 		if args.sourceName ~= UnitName("player") then
 			if self.Options.TankArrow then
 				DBM.Arrow:ShowRunTo(args.sourceName, 0, 0)
@@ -181,3 +190,13 @@ function mod:CHAT_MSG_MONSTER_YELL(msg)
 		self:WallSlime()
 	end
 end
+
+--[[function mod:OnSync(msg, target)
+	if msg == "OozeTank" then
+		if target ~= UnitName("player") then
+			if self.Options.TankArrow then
+				DBM.Arrow:ShowRunTo(target, 0, 0)
+			end
+		end
+	end
+end--]]

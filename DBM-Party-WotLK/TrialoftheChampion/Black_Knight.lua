@@ -23,7 +23,7 @@ local warnMarked			= mod:NewTargetAnnounce(67823, 3)
 local specWarnDesecration	= mod:NewSpecialWarningMove(67876)
 local specWarnExplode		= mod:NewSpecialWarningRun(67751, mod:IsMelee())
 
-local timerCombatStart		= mod:NewTimer(38.5, "TimerCombatStart", 2457)
+local timerCombatStart		= mod:NewTimer(55.5, "TimerCombatStart", 2457)
 local timerMarked			= mod:NewTargetTimer(10, 67823)
 local timerExplode			= mod:NewCastTimer(4, 67886)
 
