@@ -20,7 +20,7 @@ local enrageTimer	= mod:NewBerserkTimer(360)
 local timerAchieve	= mod:NewAchievementTimer(180, 1857, "TimerSpeedKill")
 
 local function announceStrike(target, damage)
-	DEFAULT_CHAT_FRAME:AddMessage(L.HatefulStrike:format(target, damage))
+	SendChatMessage(L.HatefulStrike:format(target, damage), "RAID")
 end
 
 function mod:OnCombatStart(delay)
