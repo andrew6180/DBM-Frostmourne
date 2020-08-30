@@ -29,10 +29,10 @@ local warnPortalOpen	= mod:NewAnnounce("WarnPortalOpen", 4, 72483)
 local specWarnLayWaste	= mod:NewSpecialWarningSpell(71730)
 local specWarnManaVoid	= mod:NewSpecialWarningMove(71741)
 
-local specWarnSuppresserOne			= mod:NewSpecialWarning("Suppressors")
-local specWarnSuppresserTwo			= mod:NewSpecialWarning("Suppressors")
-local specWarnSuppresserThree		= mod:NewSpecialWarning("Suppressors")
-local specWarnSuppresserFour		= mod:NewSpecialWarning("Suppressors")
+local specWarnSuppresserOne			= mod:NewSpecialWarning("Suppressors", not mod:IsHealer())
+local specWarnSuppresserTwo			= mod:NewSpecialWarning("Suppressors", not mod:IsHealer())
+local specWarnSuppresserThree		= mod:NewSpecialWarning("Suppressors", not mod:IsHealer())
+local specWarnSuppresserFour		= mod:NewSpecialWarning("Suppressors", not mod:IsHealer())
 
 local timerLayWaste		= mod:NewBuffActiveTimer(12, 69325)
 local timerNextPortal	= mod:NewCDTimer(46.5, 72483, nil)
@@ -43,10 +43,10 @@ local timerCorrosion	= mod:NewTargetTimer(6, 70751, nil, false)
 local timerBlazingSkeleton	= mod:NewTimer(50, "TimerBlazingSkeleton", 17204)
 local timerAbom				= mod:NewTimer(50, "TimerAbom", 43392)--Experimental
 
-local timerSuppresserOne	= mod:NewTimer(70, "1st wave of Suppressors")
-local timerSuppresserTwo	= mod:NewTimer(60, "2nd wave of Suppressors")
-local timerSuppresserThree	= mod:NewTimer(60, "3rd wave of Suppressors")
-local timerSuppresserFour	= mod:NewTimer(60, "4th wave of Suppressors")
+local timerSuppresserOne	= mod:NewTimer(70, "1st wave of Suppressors", not mod:IsHealer())
+local timerSuppresserTwo	= mod:NewTimer(60, "2nd wave of Suppressors", not mod:IsHealer())
+local timerSuppresserThree	= mod:NewTimer(60, "3rd wave of Suppressors", not mod:IsHealer())
+local timerSuppresserFour	= mod:NewTimer(60, "4th wave of Suppressors", not mod:IsHealer())
 
 local berserkTimer		= mod:NewBerserkTimer(420)
 
