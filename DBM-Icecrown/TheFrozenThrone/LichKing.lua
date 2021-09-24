@@ -280,6 +280,7 @@ function mod:SPELL_CAST_START(args)
 		warnInfest:Show()
 		specWarnInfest:Show()
 		timerInfestCD:Start()
+		PlaySoundFile("Interface\\Addons\\DBM-Core\\sounds\\infest.mp3")
 	elseif args:IsSpellID(72762) then -- Defile
 		if self.Options.LKBugWorkaround then
 			self:ScheduleMethod(0.1, "OldDefileTarget")
@@ -339,6 +340,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		lastPlagueCast = GetTime()
 		if args:IsPlayer() then
 			specWarnNecroticPlague:Show()
+			PlaySoundFile("Interface\\Addons\\DBM-Core\\sounds\\necro.mp3")
 		end
 		if self.Options.NecroticPlagueIcon then
 			self:SetIcon(args.destName, 5, 5)
@@ -348,6 +350,7 @@ function mod:SPELL_CAST_SUCCESS(args)
 		specwarnSoulreaper:Show(args.destName)
 		timerSoulreaper:Start(args.destName)
 		timerSoulreaperCD:Start()
+		PlaySoundFile("Interface\\Addons\\DBM-Core\\sounds\\soulreaper.mp3")
 		if args:IsPlayer() then
 			specWarnSoulreaper:Show()
 		end

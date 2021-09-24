@@ -199,11 +199,13 @@ function mod:SPELL_CAST_SUCCESS(args)
 		warnChokingGasBomb:Show()
 		specWarnChokingGasBomb:Show()
 		timerChokingGasBombCD:Start()
+		PlaySoundFile("Interface\\Addons\\DBM-Core\\sounds\\gasbomb.mp3")
 	elseif args:IsSpellID(72855, 72856, 70911) then
 		timerUnboundPlagueCD:Start()
 	elseif args:IsSpellID(72615, 72295, 74280, 74281) then
 		warnMalleableGoo:Show()
 		specWarnMalleableGooCast:Show()
+		PlaySoundFile("Interface\\Addons\\DBM-Core\\sounds\\malleable.mp3")
 		if mod:IsDifficulty("heroic10") or mod:IsDifficulty("heroic25") then
 			timerMalleableGooCD:Start(20)
 		else

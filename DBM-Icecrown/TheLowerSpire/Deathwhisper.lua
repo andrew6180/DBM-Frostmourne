@@ -290,6 +290,7 @@ function mod:SPELL_SUMMON(args)
 		if time() - lastSpirit > 5 then
 			warnSummonSpirit:Show()
 			timerSummonSpiritCD:Start()
+			PlaySoundFile("Interface\\Addons\\DBM-Core\\sounds\\spirits.mp3")
 			lastSpirit = time()
 		end
 	end
